@@ -7,40 +7,41 @@ namespace Alsciende\Behat\Json;
 use JsonSchema\SchemaStorage;
 use JsonSchema\Validator;
 
+/**
+ * This class is responsible for knowing how to validate a Json object against a Json schema
+ */
 class JsonSchema
 {
     /**
-     * @var string
+     * @var Validator
      */
-    private $filename;
+    private $validator;
 
     /**
-     * @param string $filename
+     * @var SchemaStorage
      */
-    public function __construct(string $filename)
+    private $schemaStorage;
+
+    public function __construct()
     {
-        $this->filename = $filename;
+        $this->validator = new Validator();
+        $this->schemaStorage = new SchemaStorage();
     }
 
     /**
-     * @param Json          $json
-     * @param Validator     $validator
-     * @param SchemaStorage $schemaStorage
+     * @param Json   $json     The content to validate
+     * @param string $filename The path of the file holding the schema
      *
      * @return bool
-     *
-     * @throws \Exception
      */
-    public function validate(Json $json, Validator $validator, SchemaStorage $schemaStorage)
+    public function validate(Json $json, string $filename)
     {
-        $schema = $schemaStorage->resolveRef('file://' . realpath($this->filename));
-        $data = $json->getRawContent();
+        $schema = $this->schemaStorage->resolveRef('file://' . realpath($filename));
+        $this->validator->check($json->getDecoded(), $schema);
 
-        $validator->check($data, $schema);
-
-        if (!$validator->isValid()) {
+        if (!$this->validator->isValid()) {
             $msg = 'JSON does not validate. Violations:' . PHP_EOL;
-            foreach ($validator->getErrors() as $error) {
+            foreach ($this->validator->getErrors() as $error) {
                 $msg .= sprintf('  - [%s] %s' . PHP_EOL, $error['property'], $error['message']);
             }
             throw new \Exception($msg);

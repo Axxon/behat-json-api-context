@@ -4,26 +4,26 @@ declare(strict_types=1);
 
 namespace Alsciende\Behat\Json;
 
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-
+/**
+ * The class is responsible for representing a JSON value
+ */
 class Json
 {
     /**
      * @var mixed
      */
-    private $content;
+    private $decoded;
 
     /**
      * Json constructor.
      *
-     * @param mixed $content
-     * @param bool  $encodedAsString
+     * @param string $content
      *
      * @throws \Exception
      */
-    public function __construct($content, $encodedAsString = true)
+    public function __construct(string $content)
     {
-        $this->content = true === $encodedAsString ? $this->decode((string) $content) : $content;
+        $this->decoded = $this->decode($content);
     }
 
     /**
@@ -35,7 +35,7 @@ class Json
      */
     private function decode(string $content)
     {
-        $result = json_decode($content);
+        $result = json_decode($content, false);
 
         if (JSON_ERROR_NONE !== json_last_error()) {
             throw new \Exception(
@@ -46,40 +46,9 @@ class Json
         return $result;
     }
 
-    public static function fromRawContent($content)
+    public function getDecoded()
     {
-        return new static($content, false);
-    }
-
-    /**
-     * @param string                    $expression
-     * @param PropertyAccessorInterface $accessor
-     *
-     * @return array|mixed
-     */
-    public function read(string $expression, PropertyAccessorInterface $accessor)
-    {
-        if (is_array($this->content)) {
-            $expression = preg_replace('/^root/', '', $expression);
-        } else {
-            $expression = preg_replace('/^root./', '', $expression);
-        }
-
-        if (null === $expression) {
-            throw new \Exception(sprintf('Regex matching failed : error code [%d]', preg_last_error()));
-        }
-
-        // If root asked, we return the entire content
-        if (strlen(trim($expression)) <= 0) {
-            return $this->content;
-        }
-
-        return $accessor->getValue($this->content, $expression);
-    }
-
-    public function getRawContent()
-    {
-        return $this->content;
+        return $this->decoded;
     }
 
     public function __toString()
@@ -87,12 +56,12 @@ class Json
         return $this->encode(false);
     }
 
-    public function encode($pretty = true)
+    private function encode($pretty = true)
     {
         if (true === $pretty && defined('JSON_PRETTY_PRINT')) {
-            return json_encode($this->content, JSON_PRETTY_PRINT);
+            return json_encode($this->decoded, JSON_PRETTY_PRINT);
         }
 
-        return json_encode($this->content);
+        return json_encode($this->decoded);
     }
 }

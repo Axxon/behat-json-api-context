@@ -4,59 +4,40 @@ declare(strict_types=1);
 
 namespace Alsciende\Behat\Json;
 
+/**
+ * This class is responsible for controlling the other objects
+ */
 class JsonInspector
 {
+    /**
+     * @var Json
+     */
+    private $json;
+
     /**
      * @var JsonParser
      */
     private $jsonParser;
 
     /**
-     * @var JsonStorage
+     * @var JsonSchema
      */
-    private $jsonStorage;
+    private $jsonSchema;
 
-    public function __construct()
+    public function __construct(string $jsonContent)
     {
+        $this->json = new Json($jsonContent);
         $this->jsonParser = new JsonParser();
-        $this->jsonStorage = new JsonStorage();
+        $this->jsonSchema = new JsonSchema();
     }
 
-    /**
-     * @param string $jsonNodeExpression
-     *
-     * @return array|mixed
-     *
-     * @throws \Exception
-     */
-    public function readJsonNodeValue(string $jsonNodeExpression)
+    public function evaluate(string $jsonNodeExpression)
     {
-        return $this->jsonParser->evaluate(
-            $this->readJson(),
-            $jsonNodeExpression
-        );
+        return $this->jsonParser->evaluate($this->json, $jsonNodeExpression);
     }
 
-    public function readJson()
+    public function validate(string $filename)
     {
-        return $this->jsonStorage->readJson();
-    }
-
-    /**
-     * @param JsonSchema $jsonSchema
-     *
-     * @throws \Exception
-     */
-    public function validateJson(JsonSchema $jsonSchema)
-    {
-        $this->jsonParser->validate(
-            $this->readJson(),
-            $jsonSchema
-        );
-    }
-
-    public function writeJson($jsonContent)
-    {
-        $this->jsonStorage->writeRawContent($jsonContent);
+        $this->jsonSchema->validate($this->json, $filename);
     }
 }
