@@ -1,0 +1,1 @@
+# behat-json-api-context

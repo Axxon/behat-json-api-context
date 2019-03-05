@@ -1,0 +1,43 @@
+{
+    "name": "alsciende/behat-json-api-context",
+    "description": "Behat context to test your JSON API",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Alsciende",
+            "email": "alsciende@icloud.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "autoload": {
+        "psr-4": {
+            "Alsciende\\Behat\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "require": {
+        "beberlei/assert": "^3.2",
+        "behat/behat": "^3.5",
+        "justinrainbow/json-schema": "^5.2",
+        "symfony/browser-kit": "^4.2",
+        "symfony/cache": "^4.2",
+        "symfony/http-kernel": "^4.2",
+        "symfony/lock": "^4.2",
+        "symfony/process": "^4.2",
+        "symfony/property-access": "^4.2",
+        "symfony/var-dumper": "^4.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "phpstan/phpstan": "^0.11.2",
+        "phpunit/phpunit": "^7.5"
+    }
+}
