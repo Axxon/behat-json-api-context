@@ -49,17 +49,51 @@ class JsonContext implements Context
     }
 
     /**
-     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should be equal to "(?P<expectedValue>.*)"$/
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should be the string "(?P<expectedValue>.*)"$/
      */
-    public function theJsonNodeShouldBeEqualTo($jsonNode, $expectedValue)
+    public function theJsonNodeShouldBeTheString(string $jsonNode, string $expectedValue)
     {
         $realValue = $this->jsonInspector->evaluate($jsonNode);
-        $expectedValue = $this->evaluateExpectedValue($expectedValue);
-        Assertion::eq($realValue, $expectedValue);
+        Assertion::same($realValue, $expectedValue);
     }
 
     /**
-     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should have (?P<expectedNth>\d+) elements?$/
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should be the integer (?P<expectedValue>\d+)$/
+     */
+    public function theJsonNodeShouldBeTheInteger(string $jsonNode, int $expectedValue)
+    {
+        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        Assertion::same($realValue, $expectedValue);
+    }
+
+    /**
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should be true$/
+     */
+    public function theJsonNodeShouldBeTrue(string $jsonNode)
+    {
+        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        Assertion::true($realValue);
+    }
+
+    /**
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should be false$/
+     */
+    public function theJsonNodeShouldBeFalse(string $jsonNode)
+    {
+        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        Assertion::false($realValue);
+    }
+
+    /**
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should be null$/
+     */
+    public function theJsonNodeShouldBeNull(string $jsonNode)
+    {
+        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        Assertion::null($realValue);
+    }
+
+    /**
      * @Then /^the JSON array node "(?P<jsonNode>[^"]*)" should have (?P<expectedNth>\d+) elements?$/
      */
     public function theJsonNodeShouldHaveElements($jsonNode, int $expectedNth)
@@ -70,7 +104,7 @@ class JsonContext implements Context
     }
 
     /**
-     * @Then /^the JSON array node "(?P<jsonNode>[^"]*)" should contain "(?P<expectedValue>.*)" element$/
+     * @Then /^the JSON array node "(?P<jsonNode>[^"]*)" should contain "(?P<expectedValue>.*)"$/
      */
     public function theJsonArrayNodeShouldContainElements($jsonNode, $expectedValue)
     {
@@ -80,7 +114,7 @@ class JsonContext implements Context
     }
 
     /**
-     * @Then /^the JSON array node "(?P<jsonNode>[^"]*)" should not contain "(?P<expectedValue>.*)" element$/
+     * @Then /^the JSON array node "(?P<jsonNode>[^"]*)" should not contain "(?P<expectedValue>.*)"$/
      */
     public function theJsonArrayNodeShouldNotContainElements($jsonNode, $expectedValue)
     {
@@ -158,19 +192,6 @@ class JsonContext implements Context
     public function theJsonShouldBeValidAccordingToTheSchema($filename)
     {
         $this->jsonInspector->validate($this->resolveFilename($filename));
-    }
-
-    private function evaluateExpectedValue($expectedValue)
-    {
-        if (in_array($expectedValue, ['true', 'false'])) {
-            return filter_var($expectedValue, FILTER_VALIDATE_BOOLEAN);
-        }
-
-        if ('null' === $expectedValue) {
-            return null;
-        }
-
-        return $expectedValue;
     }
 
     private function resolveFilename($filename)
