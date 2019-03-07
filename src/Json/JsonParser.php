@@ -8,7 +8,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 /**
- * The class is responsible for knowing how to read a Json object with a XPath-like syntax
+ * The class is responsible for knowing how to read arbitrary data with a XPath-like syntax
  */
 class JsonParser
 {
@@ -20,21 +20,20 @@ class JsonParser
     public function __construct()
     {
         $this->propertyAccessor = PropertyAccess::createPropertyAccessorBuilder()
-            ->enableExceptionOnInvalidIndex()
-            ->getPropertyAccessor()
-        ;
+                                                ->enableExceptionOnInvalidIndex()
+                                                ->getPropertyAccessor();
     }
 
     /**
-     * @param Json   $json
+     * @param mixed  $data
      * @param string $expression
      *
      * @return array|mixed
-     *
-     * @throws \Exception
      */
-    public function evaluate(Json $json, string $expression)
+    public function evaluate($data, string $expression = '')
     {
-        return $this->propertyAccessor->getValue($json->getDecoded(), $expression);
+        return empty($expression) ?
+            $data
+            : $this->propertyAccessor->getValue($data, $expression);
     }
 }

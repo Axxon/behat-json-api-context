@@ -8,7 +8,7 @@ use JsonSchema\SchemaStorage;
 use JsonSchema\Validator;
 
 /**
- * This class is responsible for knowing how to validate a Json object against a Json schema
+ * This class is responsible for knowing how to validate arbitrary data against a Json schema
  */
 class JsonSchema
 {
@@ -29,15 +29,17 @@ class JsonSchema
     }
 
     /**
-     * @param Json   $json     The content to validate
+     * @param mixed  $data
      * @param string $filename The path of the file holding the schema
      *
      * @return bool
+     *
+     * @throws \Exception
      */
-    public function validate(Json $json, string $filename)
+    public function validate($data, string $filename)
     {
         $schema = $this->schemaStorage->resolveRef('file://' . realpath($filename));
-        $this->validator->check($json->getDecoded(), $schema);
+        $this->validator->check($data, $schema);
 
         if (!$this->validator->isValid()) {
             $msg = 'JSON does not validate. Violations:' . PHP_EOL;

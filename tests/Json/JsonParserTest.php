@@ -26,7 +26,7 @@ class JsonParserTest extends TestCase
         $this->assertSame(
             'baz',
             $this->underTest->evaluate(
-                new Json('{"fu":[{"bar":"baz"}]}'),
+                (new Json('{"fu":[{"bar":"baz"}]}'))->getDecoded(),
                 'fu[0].bar'
             )
         );
@@ -37,8 +37,39 @@ class JsonParserTest extends TestCase
         $this->assertSame(
             'baz',
             $this->underTest->evaluate(
-                new Json('[{"fu":{"bar":"baz"}}]'),
+                (new Json('[{"fu":{"bar":"baz"}}]'))->getDecoded(),
                 '[0].fu.bar'
+            )
+        );
+    }
+
+    public function testEvaluateArray()
+    {
+        $this->assertSame(
+            ['bar', 'baz'],
+            $this->underTest->evaluate(
+                (new Json('{"fu":["bar","baz"]}'))->getDecoded(),
+                'fu'
+            )
+        );
+    }
+
+    public function testEvaluateRootAsObject()
+    {
+        $this->assertEquals(
+            (object) ['fu' => ['bar', 'baz']],
+            $this->underTest->evaluate(
+                (new Json('{"fu":["bar","baz"]}'))->getDecoded()
+            )
+        );
+    }
+
+    public function testEvaluateRootAsArray()
+    {
+        $this->assertSame(
+            ['bar', 'baz'],
+            $this->underTest->evaluate(
+                (new Json('["bar","baz"]'))->getDecoded()
             )
         );
     }

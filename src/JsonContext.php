@@ -8,7 +8,6 @@ use Alsciende\Behat\Json\Json;
 use Alsciende\Behat\Json\JsonInspector;
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
 
 /**
  * @see https://github.com/ubirak/rest-api-behat-extension
@@ -22,30 +21,17 @@ class JsonContext implements Context
      */
     private $jsonSchemaBaseUrl;
 
-    /**
-     * @var JsonInspector
-     */
-    private $jsonInspector;
-
     public function __construct($jsonSchemaBaseUrl = '')
     {
         $this->jsonSchemaBaseUrl = rtrim($jsonSchemaBaseUrl, '/');
     }
 
     /**
-     * @When /^I load JSON:$/
+     * @Then the response content is valid JSON
      */
-    public function iLoadJson(PyStringNode $jsonContent)
+    public function theResponseContentIsValidJson()
     {
-        $this->jsonInspector = new JsonInspector((string) $jsonContent);
-    }
-
-    /**
-     * @When /^I load the response as JSON$/
-     */
-    public function iLoadTheResponseAsJson()
-    {
-        $this->jsonInspector = new JsonInspector($this->dataStoreContext['response']['content']);
+        $this->dataStoreContext['json'] = (new Json($this->dataStoreContext['response']['content']))->getDecoded();
     }
 
     /**
@@ -53,7 +39,8 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldBeTheString(string $jsonNode, string $expectedValue)
     {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $realValue = $jsonInspector->evaluate($jsonNode);
         Assertion::same($realValue, $expectedValue);
     }
 
@@ -62,7 +49,8 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldBeTheInteger(string $jsonNode, int $expectedValue)
     {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $realValue = $jsonInspector->evaluate($jsonNode);
         Assertion::same($realValue, $expectedValue);
     }
 
@@ -71,7 +59,8 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldBeTrue(string $jsonNode)
     {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $realValue = $jsonInspector->evaluate($jsonNode);
         Assertion::true($realValue);
     }
 
@@ -80,7 +69,8 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldBeFalse(string $jsonNode)
     {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $realValue = $jsonInspector->evaluate($jsonNode);
         Assertion::false($realValue);
     }
 
@@ -89,7 +79,8 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldBeNull(string $jsonNode)
     {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $realValue = $jsonInspector->evaluate($jsonNode);
         Assertion::null($realValue);
     }
 
@@ -98,8 +89,19 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldBeAnArray(string $jsonNode)
     {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $realValue = $jsonInspector->evaluate($jsonNode);
         Assertion::isArray($realValue);
+    }
+
+    /**
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should be an object/
+     */
+    public function theJsonNodeShouldBeAnObject(string $jsonNode)
+    {
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $realValue = $jsonInspector->evaluate($jsonNode);
+        Assertion::isObject($realValue);
     }
 
     /**
@@ -107,7 +109,8 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldHaveElements($jsonNode, int $expectedNth)
     {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $realValue = $jsonInspector->evaluate($jsonNode);
         Assertion::isArray($realValue);
         Assertion::count($realValue, $expectedNth);
     }
@@ -117,8 +120,9 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldExist($jsonNode)
     {
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
         try {
-            $this->jsonInspector->evaluate($jsonNode);
+            $jsonInspector->evaluate($jsonNode);
         } catch (\Exception $e) {
             throw new \Exception(sprintf("The node '%s' does not exist.", $jsonNode), 0, $e);
         }
@@ -129,8 +133,9 @@ class JsonContext implements Context
      */
     public function theJsonNodeShouldNotExist($jsonNode)
     {
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
         try {
-            $realValue = $this->jsonInspector->evaluate($jsonNode);
+            $realValue = $jsonInspector->evaluate($jsonNode);
         } catch (\Exception $e) {
             return;
         }
@@ -143,7 +148,7 @@ class JsonContext implements Context
     /**
      * @Then /^the JSON should be valid according to this schema:$/
      */
-    public function theJsonShouldBeValidAccordingToThisSchema(PyStringNode $jsonSchemaContent)
+    public function theJsonShouldBeValidAccordingToThisSchema(string $jsonSchemaContent)
     {
         $tempFilename = tempnam(sys_get_temp_dir(), 'rae');
         if (false === $tempFilename) {
@@ -152,7 +157,8 @@ class JsonContext implements Context
 
         file_put_contents($tempFilename, $jsonSchemaContent);
 
-        $this->jsonInspector->validate($tempFilename);
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $jsonInspector->validate($tempFilename);
 
         unlink($tempFilename);
     }
@@ -162,7 +168,8 @@ class JsonContext implements Context
      */
     public function theJsonShouldBeValidAccordingToTheSchema($filename)
     {
-        $this->jsonInspector->validate($this->resolveFilename($filename));
+        $jsonInspector = new JsonInspector($this->dataStoreContext['json']);
+        $jsonInspector->validate($this->resolveFilename($filename));
     }
 
     private function resolveFilename($filename)

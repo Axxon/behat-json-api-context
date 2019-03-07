@@ -12,7 +12,7 @@ trait DataStoreContextGatheringTrait
     /**
      * @var DataStoreContext
      */
-    private $dataStoreContext;
+    public $dataStoreContext;
 
     /**
      * @BeforeScenario
