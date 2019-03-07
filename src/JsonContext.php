@@ -94,51 +94,22 @@ class JsonContext implements Context
     }
 
     /**
-     * @Then /^the JSON array node "(?P<jsonNode>[^"]*)" should have (?P<expectedNth>\d+) elements?$/
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should be an array/
+     */
+    public function theJsonNodeShouldBeAnArray(string $jsonNode)
+    {
+        $realValue = $this->jsonInspector->evaluate($jsonNode);
+        Assertion::isArray($realValue);
+    }
+
+    /**
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should have (?P<expectedNth>\d+) elements?$/
      */
     public function theJsonNodeShouldHaveElements($jsonNode, int $expectedNth)
     {
         $realValue = $this->jsonInspector->evaluate($jsonNode);
         Assertion::isArray($realValue);
         Assertion::count($realValue, $expectedNth);
-    }
-
-    /**
-     * @Then /^the JSON array node "(?P<jsonNode>[^"]*)" should contain "(?P<expectedValue>.*)"$/
-     */
-    public function theJsonArrayNodeShouldContainElements($jsonNode, $expectedValue)
-    {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
-        Assertion::isArray($realValue);
-        Assertion::inArray($expectedValue, $realValue);
-    }
-
-    /**
-     * @Then /^the JSON array node "(?P<jsonNode>[^"]*)" should not contain "(?P<expectedValue>.*)"$/
-     */
-    public function theJsonArrayNodeShouldNotContainElements($jsonNode, $expectedValue)
-    {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
-        Assertion::isArray($realValue);
-        Assertion::notInArray($expectedValue, $realValue);
-    }
-
-    /**
-     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should contain "(?P<expectedValue>.*)"$/
-     */
-    public function theJsonNodeShouldContain($jsonNode, $expectedValue)
-    {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
-        Assertion::contains($realValue, $expectedValue);
-    }
-
-    /**
-     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should not contain "(?P<unexpectedValue>.*)"$/
-     */
-    public function theJsonNodeShouldNotContain($jsonNode, $unexpectedValue)
-    {
-        $realValue = $this->jsonInspector->evaluate($jsonNode);
-        Assertion::false(strstr($realValue, $unexpectedValue));
     }
 
     /**
