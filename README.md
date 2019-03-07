@@ -40,7 +40,7 @@ Given the request body is:
 When I request :method :path
 Then the response code is :code
 Then the response header :header is :expected
-Then the response content is valid JSON
+When the response content is valid JSON
 Then /^the JSON node "(?P<jsonNode>[^"]*)" should be the string "(?P<expectedValue>.*)"$/
 Then /^the JSON node "(?P<jsonNode>[^"]*)" should be the integer (?P<expectedValue>\d+)$/
 Then /^the JSON node "(?P<jsonNode>[^"]*)" should be true$/

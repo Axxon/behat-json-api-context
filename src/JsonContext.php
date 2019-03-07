@@ -27,7 +27,7 @@ class JsonContext implements Context
     }
 
     /**
-     * @Then the response content is valid JSON
+     * @When the response content is valid JSON
      */
     public function theResponseContentIsValidJson()
     {
