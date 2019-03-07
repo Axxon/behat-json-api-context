@@ -82,6 +82,12 @@ class JsonContextTest extends TestCase
         $this->assertNull($this->underTest->theJsonNodeShouldBeNull('fu.bar'));
     }
 
+    public function testJsonMustBeLoadedFirst()
+    {
+        $this->expectException(\Exception::class);
+        $this->underTest->theJsonNodeShouldBeNull('');
+    }
+
     protected function setUp()
     {
         parent::setUp();
