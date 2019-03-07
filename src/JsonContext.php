@@ -108,7 +108,7 @@ class JsonContext implements Context
     }
 
     /**
-     * @Given /^the JSON node "(?P<jsonNode>[^"]*)" should exist$/
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should exist$/
      */
     public function theJsonNodeShouldExist($jsonNode)
     {
@@ -121,7 +121,7 @@ class JsonContext implements Context
     }
 
     /**
-     * @Given /^the JSON node "(?P<jsonNode>[^"]*)" should not exist$/
+     * @Then /^the JSON node "(?P<jsonNode>[^"]*)" should not exist$/
      */
     public function theJsonNodeShouldNotExist($jsonNode)
     {

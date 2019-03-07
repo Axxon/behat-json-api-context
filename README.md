@@ -49,8 +49,8 @@ Then /^the JSON node "(?P<jsonNode>[^"]*)" should be null$/
 Then /^the JSON node "(?P<jsonNode>[^"]*)" should be an array$/
 Then /^the JSON node "(?P<jsonNode>[^"]*)" should be an object$/
 Then /^the JSON node "(?P<jsonNode>[^"]*)" should have (?P<expectedNth>\d+) elements?$/
-Given /^the JSON node "(?P<jsonNode>[^"]*)" should exist$/
-Given /^the JSON node "(?P<jsonNode>[^"]*)" should not exist$/
+Then /^the JSON node "(?P<jsonNode>[^"]*)" should exist$/
+Then /^the JSON node "(?P<jsonNode>[^"]*)" should not exist$/
 Then /^the JSON should be valid according to this schema:$/
 Then /^the JSON should be valid according to the schema "(?P<filename>[^"]*)"$/
 ```
