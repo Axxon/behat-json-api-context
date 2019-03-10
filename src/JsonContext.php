@@ -155,6 +155,14 @@ class JsonContext implements Context
     }
 
     /**
+     * @Then /^I dump the decoded response content$/
+     */
+    public function iDumpTheDecodedResponseContent()
+    {
+        dump($this->getJsonInspector()->getData());
+    }
+
+    /**
      * @Then /^the JSON should be valid according to the schema "(?P<filename>[^"]*)"$/
      */
     public function theJsonShouldBeValidAccordingToTheSchema($filename)

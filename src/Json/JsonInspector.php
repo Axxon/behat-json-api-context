@@ -45,4 +45,9 @@ class JsonInspector
     {
         $this->jsonSchema->validate($this->data, $filename);
     }
+
+    public function getData()
+    {
+        return $this->data;
+    }
 }
