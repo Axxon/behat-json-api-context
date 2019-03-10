@@ -53,4 +53,5 @@ Then /^the JSON node "(?P<jsonNode>[^"]*)" should exist$/
 Then /^the JSON node "(?P<jsonNode>[^"]*)" should not exist$/
 Then /^the JSON should be valid according to this schema:$/
 Then /^the JSON should be valid according to the schema "(?P<filename>[^"]*)"$/
+Then I dump the decoded response content
 ```

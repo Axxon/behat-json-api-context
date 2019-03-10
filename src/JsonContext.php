@@ -155,7 +155,7 @@ class JsonContext implements Context
     }
 
     /**
-     * @Then /^I dump the decoded response content$/
+     * @Then I dump the decoded response content
      */
     public function iDumpTheDecodedResponseContent()
     {
