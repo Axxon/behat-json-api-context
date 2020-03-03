@@ -6,7 +6,7 @@ namespace Alsciende\Behat;
 
 use Assert\Assertion;
 use Behat\Behat\Context\Context;
-use Symfony\Component\BrowserKit\Client;
+use Symfony\Component\BrowserKit\AbstractBrowser;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -44,7 +44,7 @@ class ApiContext implements Context
     private $server = [];
 
     /**
-     * @var Client
+     * @var AbstractBrowser
      */
     private $client;
 
@@ -58,7 +58,7 @@ class ApiContext implements Context
      */
     private $method;
 
-    public function __construct(Client $client)
+    public function __construct(AbstractBrowser $client)
     {
         $this->client = $client;
     }
